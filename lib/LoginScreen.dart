@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_session/flutter_session.dart';
+import 'package:id_works_afhsgear/utils/SessionsUtility.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -83,6 +85,14 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> saveData(context,email,password) async {
+    SessionsUtility myData = SessionsUtility(userName: email,password:password);
+
+    await FlutterSession().set('myData', myData);
+    //navigate to webview
+    // Navigator.push(context, MaterialPageRoute(builder: (_context) => Page2()));
   }
 
   Widget _homeLogoWidget() {
@@ -168,7 +178,9 @@ class _LoginScreenState extends State<LoginScreen> {
         color: Color(0xFFf88d2a),
       ),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          saveData(context, "", "");
+        },
         child: const Text(
           'LOGIN',
           style: TextStyle(color: Colors.white, fontSize: 22),
