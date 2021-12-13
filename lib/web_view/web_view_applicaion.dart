@@ -15,8 +15,6 @@ class WebViewApplication extends StatefulWidget {
 
 WebViewController? controllerGlobal;
 
-
-
 Future<bool> _handleBack(context) async {
   var status = await controllerGlobal!.canGoBack();
   if (status) {
@@ -79,15 +77,13 @@ class _WebViewApplicationState extends State<WebViewApplication> {
   }
 
   Widget _buildWebView(BuildContext context) {
-
-      return WebView(
-        initialUrl: 'https://amazon.in/',
-        javascriptMode: JavascriptMode.unrestricted,
-        onWebViewCreated: (WebViewController webViewController) {
-          _controller.complete(webViewController);
-          controllerGlobal = webViewController;
-        },
-      );
-
+    return WebView(
+      initialUrl: 'https://flipkart.com/',
+      javascriptMode: JavascriptMode.unrestricted,
+      onWebViewCreated: (WebViewController webViewController) {
+        _controller.complete(webViewController);
+        controllerGlobal = webViewController;
+      },
+    );
   }
 }
