@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.idworks.id_works_afhsgear">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="id_works_afhsgear"
         android:name="${applicationName}"
