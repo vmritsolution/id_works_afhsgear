@@ -3,12 +3,13 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:id_works_afhsgear/web_view/web_view_applicaion.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
@@ -86,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _homeLogoWidget() {
-    return Container(
+    return SizedBox(
       height: 150,
       width: 150,
       child: SvgPicture.asset("assets/HouseLogoSVG.svg"),
@@ -105,15 +106,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(0),
-              borderSide: const BorderSide(color: Color(0xFFf88d2a), width: 2),
+              borderSide: const BorderSide(color: Color(0xFFf88d2d), width: 2),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(0),
-              borderSide: const BorderSide(color: Color(0xFFf88d2a), width: 2),
+              borderSide: const BorderSide(color: Color(0xFFf88d2d), width: 2),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(0),
-              borderSide: const BorderSide(color: Color(0xFFf88d2a), width: 2),
+              borderSide: const BorderSide(color: Color(0xFFf88d2d), width: 2),
             ),
           ),
         ),
@@ -126,15 +127,15 @@ class _LoginScreenState extends State<LoginScreen> {
             labelStyle: const TextStyle(color: Colors.black, fontSize: 18),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(0),
-              borderSide: const BorderSide(color: Color(0xFFf88d2a), width: 2),
+              borderSide: const BorderSide(color: Color(0xFFf88d2d), width: 2),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(0),
-              borderSide: const BorderSide(color: Color(0xFFf88d2a), width: 2),
+              borderSide: const BorderSide(color: Color(0xFFf88d2d), width: 2),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(0),
-              borderSide: const BorderSide(color: Color(0xFFf88d2a), width: 2),
+              borderSide: const BorderSide(color: Color(0xFFf88d2d), width: 2),
             ),
           ),
         ),
@@ -165,16 +166,23 @@ class _LoginScreenState extends State<LoginScreen> {
       width: 200,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(40),
-        color: Color(0xFFf88d2a),
+        color: const Color(0xFFf88d2d),
       ),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const WebViewApplication(),
+            ),
+          );
+        },
         child: const Text(
           'LOGIN',
           style: TextStyle(color: Colors.white, fontSize: 22),
         ),
         style: ElevatedButton.styleFrom(
-          primary: Colors.deepOrange,
+          primary: const Color(0xFFf88d2d),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40),
           ),
@@ -189,8 +197,15 @@ class _LoginScreenState extends State<LoginScreen> {
         'LOGIN',
         style: TextStyle(color: Colors.white, fontSize: 28),
       ),
-      onPressed: () {},
-      color: Colors.deepOrange,
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const WebViewApplication(),
+          ),
+        );
+      },
+      color: const Color(0xFFf88d2d),
     );
   }
 
