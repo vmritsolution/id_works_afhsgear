@@ -1,9 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:id_works_afhsgear/utility/ApiError.dart';
+import 'package:id_works_afhsgear/utility/ApiResponse.dart';
+import 'package:id_works_afhsgear/utility/User.dart';
 import 'package:id_works_afhsgear/web_view/web_view_applicaion.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -14,6 +19,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   @override
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
+
   Widget build(BuildContext context) {
     return Platform.isIOS
         ? _buildCupertinoScaffold()
@@ -41,7 +51,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildBody() {
     final mediaQuery = MediaQuery.of(context).size;
     return SafeArea(
-      child: SingleChildScrollView(
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
         child: Container(
           height: mediaQuery.height * 0.9,
           child: Center(
@@ -99,6 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       children: [
         TextFormField(
+          controller: emailController,
           decoration: InputDecoration(
             labelText: "Email Address",
             labelStyle: const TextStyle(color: Colors.black, fontSize: 18),
@@ -120,6 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         SizedBox(height: mediaQuery.height * 0.04),
         TextFormField(
+          controller: passwordController,
           decoration: InputDecoration(
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
@@ -198,12 +212,15 @@ class _LoginScreenState extends State<LoginScreen> {
         style: TextStyle(color: Colors.white, fontSize: 28),
       ),
       onPressed: () {
+        authenticateUser(emailController.text, passwordController.text);
+/*
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => const WebViewApplication(),
           ),
         );
+*/
       },
       color: const Color(0xFFf88d2d),
     );
@@ -233,5 +250,64 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+ /* void _handleSubmitted() async {
+    final FormState form = _formKey.currentState;
+    if (!form.validate()) {
+      showInSnackBar('Please fix the errors in red before submitting.');
+    } else {
+      form.save();
+      _apiResponse = await authenticateUser(_username, _password);
+      if ((_apiResponse.ApiError as ApiError) == null) {
+        _saveAndRedirectToHome();
+      } else {
+        showInSnackBar((_apiResponse.ApiError as ApiError).error);
+      }
+    }
+  }
+
+  void _saveAndRedirectToHome() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("userId", (_apiResponse.Data as User).userId);
+    Navigator.pushNamedAndRemoveUntil(
+        context, '/home', ModalRoute.withName('/home'),
+        arguments: (_apiResponse.Data as User));
+  }*/
+
+  Future<ApiResponse> authenticateUser(String username, String password) async {
+    ApiResponse _apiResponse = new ApiResponse();
+
+    try {
+      final response = await http.post(baseUrl, body: {
+        'action': "login",
+        'customerEmail': emailController.text,
+        'customerPassword': passwordController.text,
+        'siteID': 450,
+      });
+
+      switch (response.statusCode) {
+        case 200:
+          _apiResponse.Data = User.fromJson(json.decode(response.body));
+          if (_apiResponse != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const WebViewApplication(),
+              ),
+            );
+          }
+          break;
+        case 401:
+          _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
+          break;
+        default:
+          _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
+          break;
+      }
+    } on SocketException {
+      _apiResponse.ApiError = ApiError(error: "Server error. Please retry");
+    }
+    return _apiResponse;
   }
 }
