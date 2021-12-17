@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:id_works_afhsgear/utility/ApiError.dart';
 import 'package:id_works_afhsgear/utility/ApiResponse.dart';
+import 'package:id_works_afhsgear/utility/TokenUtility.dart';
 import 'package:id_works_afhsgear/utility/User.dart';
 import 'package:id_works_afhsgear/web_view/web_view_applicaion.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -187,12 +189,15 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: ElevatedButton(
         onPressed: () {
+          authenticateUser(emailController.text, passwordController.text);
+/*
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const WebViewApplication(),
             ),
           );
+*/
         },
         child: const Text(
           'LOGIN',
@@ -215,7 +220,9 @@ class _LoginScreenState extends State<LoginScreen> {
         style: TextStyle(color: Colors.white, fontSize: 28),
       ),
       onPressed: () {
-        authenticateUser(emailController.text, passwordController.text);
+        // authenticateUser(emailController.text, passwordController.text);
+        debugPrint("heyemail:"+emailController.text);
+        // authenticate(emailController.text, passwordController.text);
 /*
         Navigator.push(
           context,
@@ -280,26 +287,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<ApiResponse> authenticateUser(String username, String password) async {
     ApiResponse _apiResponse = ApiResponse();
-
     try {
       final response = await http.post(baseUrl, body: {
         'action': "login",
         'customerEmail': emailController.text,
         'customerPassword': passwordController.text,
-        'siteID': 450,
+        'siteID': "450",
       });
 
       switch (response.statusCode) {
+
         case 200:
           _apiResponse.Data = User.fromJson(json.decode(response.body));
-          if (_apiResponse != null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const WebViewApplication(),
-              ),
-            );
-          }
+          _saveAndRedirectToHome(_apiResponse);
           break;
         case 401:
           _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
@@ -312,5 +312,21 @@ class _LoginScreenState extends State<LoginScreen> {
       _apiResponse.ApiError = ApiError(error: "Server error. Please retry");
     }
     return _apiResponse;
+  }
+  void _saveAndRedirectToHome(ApiResponse apiResponse) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("token", (apiResponse.Data as User).message.token);
+    await prefs.setString("Email", emailController.text);
+    await prefs.setString("Password",passwordController.text);
+    TokenUtility.token=(apiResponse.Data as User).message.token;
+    if (apiResponse != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const WebViewApplication(),
+        ),
+      );
+    }
+
   }
 }

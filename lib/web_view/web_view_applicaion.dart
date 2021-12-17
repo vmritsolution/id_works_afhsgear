@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:id_works_afhsgear/LoginScreen.dart';
+import 'package:id_works_afhsgear/utility/TokenUtility.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewApplication extends StatefulWidget {
@@ -54,6 +56,17 @@ class _WebViewApplicationState extends State<WebViewApplication> {
     return _buildScaffold();
   }
 
+  void _handleLogout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('token');
+    prefs.setBool("isLogOut", true);
+    Navigator.of(context, rootNavigator: true).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const LoginScreen(),
+      ),
+    );
+
+  }
   Widget _buildScaffold() {
     return WillPopScope(
       onWillPop: () => _handleBack(context),
@@ -77,11 +90,12 @@ class _WebViewApplicationState extends State<WebViewApplication> {
     );
   }
 
-  final _listeningUrl = ''; // added this
+  final _listeningUrl = 'https://www.afhsgear.com/login.php'; // added this
 
   Widget _buildWebView(BuildContext context) {
+    debugPrint("tokenTotkaehereeee:${TokenUtility.token}");
     return WebView(
-      initialUrl: 'https://flipkart.com/',
+      initialUrl: 'https://www.afhsgear.com/autologin.php?token=${TokenUtility.token}',
       javascriptMode: JavascriptMode.unrestricted,
       onWebViewCreated: (WebViewController webViewController) {
         _controller.complete(webViewController);
@@ -91,6 +105,8 @@ class _WebViewApplicationState extends State<WebViewApplication> {
       // added this
       onPageStarted: (url) {
         if (url == _listeningUrl) {
+          //loder
+          _handleLogout();
           Navigator.of(context, rootNavigator: true).pushReplacement(
             MaterialPageRoute(
               builder: (context) => const LoginScreen(),

@@ -1,12 +1,19 @@
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:id_works_afhsgear/LoginScreen.dart';
+import 'package:id_works_afhsgear/utility/ApiError.dart';
+import 'package:id_works_afhsgear/utility/ApiResponse.dart';
+import 'package:id_works_afhsgear/utility/TokenUtility.dart';
+import 'package:id_works_afhsgear/utility/User.dart';
+import 'package:id_works_afhsgear/web_view/web_view_applicaion.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -16,18 +23,40 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
+
+  Future<bool?> _handleNavigation() async{
+    bool isTokenEmpty = TokenUtility.token.isEmpty;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    bool? isLogOut=await prefs.getBool("isLogOut");
+    return isLogOut;
+  }
+
   @override
   void initState() {
     super.initState();
-    Timer(
-      const Duration(seconds: 4),
-      () => Navigator.push(
+    if (_handleNavigation()==true) {
+      Timer(
+        const Duration(seconds: 4),
+            () =>
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LoginScreen(),
+              ),
+            ),
+      );
+    } else {
+      //loder
+      getLoginDetails();
+/*      Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
+          builder: (context) => const WebViewApplication(),
         ),
-      ),
-    );
+      );*/
+    }
   }
 
   // _startTime() async {
@@ -127,4 +156,57 @@ class _SplashScreenState extends State<SplashScreen> {
     )*/
         ;
   }
+  Future<ApiResponse> authenticateUser(String email, String password) async {
+    ApiResponse _apiResponse = ApiResponse();
+    try {
+      final response = await http.post(baseUrl, body: {
+        'action': "login",
+        'customerEmail': email,
+        'customerPassword': password,
+        'siteID': "450",
+      });
+
+      switch (response.statusCode) {
+
+        case 200:
+          _apiResponse.Data = User.fromJson(json.decode(response.body));
+          _saveAndRedirectToHome(_apiResponse,email,password);
+          break;
+        case 401:
+          _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
+          break;
+        default:
+          _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
+          break;
+      }
+    } on SocketException {
+      _apiResponse.ApiError = ApiError(error: "Server error. Please retry");
+    }
+    return _apiResponse;
+  }
+  void _saveAndRedirectToHome(ApiResponse apiResponse, String email,String password) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("token", (apiResponse.Data as User).message.token);
+    await prefs.setString("Email", email);
+    await prefs.setString("Password",password);
+    TokenUtility.token=(apiResponse.Data as User).message.token;
+    if (apiResponse != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const WebViewApplication(),
+        ),
+      );
+    }
+
+  }
+
+  void getLoginDetails() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? email= await prefs.getString("Email");
+    String? password=await prefs.getString("Password");
+    authenticateUser(email!, password!);
+  }
+
+
 }
