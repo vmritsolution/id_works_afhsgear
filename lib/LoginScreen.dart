@@ -54,42 +54,45 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Form(
         key: _formKey,
         child: SingleChildScrollView(
-        child: Container(
-          height: mediaQuery.height * 0.9,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _homeLogoWidget(),
-                  SizedBox(height: mediaQuery.height * 0.05),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Welcome!',
-                      style: TextStyle(fontSize: 36),
+          child: Container(
+            height: mediaQuery.height * 0.9,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _homeLogoWidget(),
+                    SizedBox(height: mediaQuery.height * 0.05),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Welcome!',
+                        style: TextStyle(fontSize: 36),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: mediaQuery.height * 0.03),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Login',
-                      style: TextStyle(fontSize: 28),
+                    SizedBox(height: mediaQuery.height * 0.03),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Login',
+                        style: TextStyle(fontSize: 28),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: mediaQuery.height * 0.04),
-                  Platform.isIOS ? _cupertinoTextField() : _materialTextField(),
-                  SizedBox(height: mediaQuery.height * 0.04),
-                  Platform.isIOS
-                      ? _cupertinoLoginButton()
-                      : _materialLoginButton(),
-                  SizedBox(height: mediaQuery.height * 0.03),
-                  Platform.isIOS
-                      ? _cupertinoTextButton()
-                      : _materialTextButton(),
-                ],
+                    SizedBox(height: mediaQuery.height * 0.04),
+                    Platform.isIOS
+                        ? _cupertinoTextField()
+                        : _materialTextField(),
+                    SizedBox(height: mediaQuery.height * 0.04),
+                    Platform.isIOS
+                        ? _cupertinoLoginButton()
+                        : _materialLoginButton(),
+                    SizedBox(height: mediaQuery.height * 0.03),
+                    Platform.isIOS
+                        ? _cupertinoTextButton()
+                        : _materialTextButton(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -252,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
- /* void _handleSubmitted() async {
+  /* void _handleSubmitted() async {
     final FormState form = _formKey.currentState;
     if (!form.validate()) {
       showInSnackBar('Please fix the errors in red before submitting.');
@@ -276,7 +279,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }*/
 
   Future<ApiResponse> authenticateUser(String username, String password) async {
-    ApiResponse _apiResponse = new ApiResponse();
+    ApiResponse _apiResponse = ApiResponse();
 
     try {
       final response = await http.post(baseUrl, body: {

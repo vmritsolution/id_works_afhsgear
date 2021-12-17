@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:id_works_afhsgear/LoginScreen.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewApplication extends StatefulWidget {
@@ -76,6 +77,8 @@ class _WebViewApplicationState extends State<WebViewApplication> {
     );
   }
 
+  final _listeningUrl = ''; // added this
+
   Widget _buildWebView(BuildContext context) {
     return WebView(
       initialUrl: 'https://flipkart.com/',
@@ -83,6 +86,17 @@ class _WebViewApplicationState extends State<WebViewApplication> {
       onWebViewCreated: (WebViewController webViewController) {
         _controller.complete(webViewController);
         controllerGlobal = webViewController;
+      },
+
+      // added this
+      onPageStarted: (url) {
+        if (url == _listeningUrl) {
+          Navigator.of(context, rootNavigator: true).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const LoginScreen(),
+            ),
+          );
+        }
       },
     );
   }
