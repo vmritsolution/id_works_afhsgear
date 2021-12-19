@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -24,39 +23,46 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
+  Future<SharedPreferences> prefs = SharedPreferences.getInstance();
 
-  Future<bool?> _handleNavigation() async{
-    bool isTokenEmpty = TokenUtility.token.isEmpty;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  String _values = "";
 
-    bool? isLogOut=await prefs.getBool("isLogOut");
-    return isLogOut;
+  Future<void> _handleNavigation(String value) async {
+    // bool isTokenEmpty = TokenUtility.token.isEmpty;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? values = prefs.getString('customerEmail'); //added
+    //added
+    if (values != null) {
+      print(values);
+      setState(() {
+        _values = values;
+      });
+    }
+    //added
+
+
+
+    getLoginDetails();
+    /*bool? isLogOut = await prefs.getBool("isLogOut");
+    return isLogOut;*/
   }
 
+  void _handleNavigtion() {}
+
   @override
-  void initState() {
+  initState() {
     super.initState();
-    if (_handleNavigation()==true) {
-      Timer(
-        const Duration(seconds: 4),
-            () =>
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const LoginScreen(),
-              ),
-            ),
-      );
-    } else {
-      //loder
-      getLoginDetails();
-/*      Navigator.push(
+    print(_values);
+    // _handleNavigation; //added
+    Timer(
+      const Duration(seconds: 4),
+          () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const WebViewApplication(),
+          builder: (context) => const LoginScreen(),
         ),
-      );*/
-    }
+      ),
+    );
   }
 
   // _startTime() async {
@@ -101,8 +107,8 @@ class _SplashScreenState extends State<SplashScreen> {
             fit: BoxFit.fill,
           ),
         ),
-         Center(
-          child:  Padding(
+        Center(
+          child: Padding(
             padding: EdgeInsets.only(top: mHeight * 0.1),
             child: const SpinKitCircle(
               color: Color(0xFFf88d2a),
@@ -116,8 +122,8 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         )
       ],
-    )
-        /*SingleChildScrollView(
+    );
+    /*SingleChildScrollView(
       child: Column(
         children: [
           SizedBox(
@@ -154,8 +160,8 @@ class _SplashScreenState extends State<SplashScreen> {
         ],
       ),
     )*/
-        ;
   }
+
   Future<ApiResponse> authenticateUser(String email, String password) async {
     ApiResponse _apiResponse = ApiResponse();
     try {
@@ -167,10 +173,9 @@ class _SplashScreenState extends State<SplashScreen> {
       });
 
       switch (response.statusCode) {
-
         case 200:
           _apiResponse.Data = User.fromJson(json.decode(response.body));
-          _saveAndRedirectToHome(_apiResponse,email,password);
+          _saveAndRedirectToHome(_apiResponse, email, password);
           break;
         case 401:
           _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
@@ -184,12 +189,14 @@ class _SplashScreenState extends State<SplashScreen> {
     }
     return _apiResponse;
   }
-  void _saveAndRedirectToHome(ApiResponse apiResponse, String email,String password) async {
+
+  void _saveAndRedirectToHome(
+      ApiResponse apiResponse, String email, String password) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("token", (apiResponse.Data as User).message.token);
     await prefs.setString("Email", email);
-    await prefs.setString("Password",password);
-    TokenUtility.token=(apiResponse.Data as User).message.token;
+    await prefs.setString("Password", password);
+    TokenUtility.token = (apiResponse.Data as User).message.token;
     if (apiResponse != null) {
       Navigator.push(
         context,
@@ -198,15 +205,20 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
     }
-
   }
 
-  void getLoginDetails() async{
+  void getLoginDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? email= await prefs.getString("Email");
-    String? password=await prefs.getString("Password");
-    authenticateUser(email!, password!);
+    String? email = await prefs.getString("Email");
+    String? password = await prefs.getString("Password");
+    if (email != null && password != null) {
+      authenticateUser(email, password);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const WebViewApplication(),
+        ),
+      );
+    }
   }
-
-
 }

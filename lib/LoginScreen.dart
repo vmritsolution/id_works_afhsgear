@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:id_works_afhsgear/utility/ApiError.dart';
 import 'package:id_works_afhsgear/utility/ApiResponse.dart';
@@ -115,7 +116,13 @@ class _LoginScreenState extends State<LoginScreen> {
     final mediaQuery = MediaQuery.of(context).size;
     return Column(
       children: [
+        //added
         TextFormField(
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Please enter email';
+            }
+          },
           controller: emailController,
           decoration: InputDecoration(
             labelText: "Email Address",
@@ -138,6 +145,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         SizedBox(height: mediaQuery.height * 0.04),
         TextFormField(
+          //added
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Please enter Password';
+            }
+          },
           controller: passwordController,
           decoration: InputDecoration(
             contentPadding:
@@ -180,36 +193,57 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _materialLoginButton() {
-    return Container(
-      height: 50,
-      width: 200,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(40),
-        color: const Color(0xFFf88d2d),
-      ),
-      child: ElevatedButton(
-        onPressed: () {
-          authenticateUser(emailController.text, passwordController.text);
-/*
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const WebViewApplication(),
-            ),
-          );
-*/
-        },
-        child: const Text(
-          'LOGIN',
-          style: TextStyle(color: Colors.white, fontSize: 22),
-        ),
-        style: ElevatedButton.styleFrom(
-          primary: const Color(0xFFf88d2d),
-          shape: RoundedRectangleBorder(
+    return Theme(
+      data: ThemeData(dialogBackgroundColor: Colors.transparent),
+      child: Builder(builder: (context) {
+        return Container(
+          height: 50,
+          width: 200,
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(40),
+            color: const Color(0xFFf88d2d),
           ),
-        ),
-      ),
+          child: ElevatedButton(
+            onPressed: () {
+
+              //added
+              _formKey.currentState!.validate();
+
+              if (_formKey.currentState!.validate()) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const AlertDialog(
+                      title: SpinKitCircle(
+                        color: Color(0xFFf88d2a),
+                      ),
+                    );
+                  },
+                );
+              }
+              authenticateUser(emailController.text, passwordController.text);
+/*
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WebViewApplication(),
+                  ),
+                );
+*/
+            },
+            child: const Text(
+              'LOGIN',
+              style: TextStyle(color: Colors.white, fontSize: 22),
+            ),
+            style: ElevatedButton.styleFrom(
+              primary: const Color(0xFFf88d2d),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40),
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 
@@ -220,8 +254,8 @@ class _LoginScreenState extends State<LoginScreen> {
         style: TextStyle(color: Colors.white, fontSize: 28),
       ),
       onPressed: () {
-        // authenticateUser(emailController.text, passwordController.text);
-        debugPrint("heyemail:"+emailController.text);
+        authenticateUser(emailController.text, passwordController.text);
+        debugPrint("heyEmail:" + emailController.text);
         // authenticate(emailController.text, passwordController.text);
 /*
         Navigator.push(
@@ -284,7 +318,7 @@ class _LoginScreenState extends State<LoginScreen> {
         context, '/home', ModalRoute.withName('/home'),
         arguments: (_apiResponse.Data as User));
   }*/
-
+  var _response;
   Future<ApiResponse> authenticateUser(String username, String password) async {
     ApiResponse _apiResponse = ApiResponse();
     try {
@@ -294,18 +328,19 @@ class _LoginScreenState extends State<LoginScreen> {
         'customerPassword': passwordController.text,
         'siteID': "450",
       });
-
+      _response = response.statusCode;// added
       switch (response.statusCode) {
-
         case 200:
           _apiResponse.Data = User.fromJson(json.decode(response.body));
           _saveAndRedirectToHome(_apiResponse);
           break;
         case 401:
           _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
+          _showSnackBar();//added
           break;
         default:
           _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
+          _showSnackBar();//added
           break;
       }
     } on SocketException {
@@ -313,12 +348,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     return _apiResponse;
   }
+
   void _saveAndRedirectToHome(ApiResponse apiResponse) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("token", (apiResponse.Data as User).message.token);
     await prefs.setString("Email", emailController.text);
-    await prefs.setString("Password",passwordController.text);
-    TokenUtility.token=(apiResponse.Data as User).message.token;
+    await prefs.setString("Password", passwordController.text);
+    TokenUtility.token = (apiResponse.Data as User).message.token;
     if (apiResponse != null) {
       Navigator.push(
         context,
@@ -327,6 +363,16 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     }
-
+  }
+  //added
+  void _showSnackBar(){
+    final snackBar = SnackBar(
+      content: const Text("Something Went Wrong"),
+      action: SnackBarAction(
+        label: "undo",
+        onPressed: (){},
+      ),
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
   }
 }
