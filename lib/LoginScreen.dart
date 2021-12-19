@@ -66,22 +66,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _homeLogoWidget(),
-                    SizedBox(height: mediaQuery.height * 0.05),
-                    const Align(
+                    SizedBox(height: mediaQuery.height * 0.1),
+                    /*const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Welcome!',
                         style: TextStyle(fontSize: 36),
                       ),
-                    ),
+                    ),*/
                     SizedBox(height: mediaQuery.height * 0.03),
-                    const Align(
+                    /*const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Login',
                         style: TextStyle(fontSize: 28),
                       ),
-                    ),
+                    ),*/
                     SizedBox(height: mediaQuery.height * 0.04),
                     Platform.isIOS
                         ? _cupertinoTextField()

@@ -23,14 +23,12 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
-  Future<SharedPreferences> prefs = SharedPreferences.getInstance();
 
-  String _values = "";
 
-  Future<void> _handleNavigation(String value) async {
+  /*Future<void> _handleNavigation(String value) async {
     // bool isTokenEmpty = TokenUtility.token.isEmpty;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? values = prefs.getString('customerEmail'); //added
+    final String values = (prefs.getString('customerEmail')!); //added
     //added
     if (values != null) {
       print(values);
@@ -40,38 +38,18 @@ class _SplashScreenState extends State<SplashScreen> {
     }
     //added
 
-
-
     getLoginDetails();
-    /*bool? isLogOut = await prefs.getBool("isLogOut");
-    return isLogOut;*/
-  }
-
-  void _handleNavigtion() {}
+    *//*bool? isLogOut = await prefs.getBool("isLogOut");
+    return isLogOut;*//*
+  }*/
 
   @override
   initState() {
     super.initState();
-    print(_values);
-    // _handleNavigation; //added
-    Timer(
-      const Duration(seconds: 4),
-          () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
-        ),
-      ),
-    );
+    getLoginDetails();
   }
 
-  // _startTime() async {
-  //   var duration = const Duration(seconds: 10);
-  //   return Future.delayed(duration,_delayedWidget);
-  // }
-  // _delayedWidget(){
-  //   return _buildPlatform();
-  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -123,43 +101,6 @@ class _SplashScreenState extends State<SplashScreen> {
         )
       ],
     );
-    /*SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-            height: (mHeight) * 0.5,
-            child: Padding(
-              padding:
-                  EdgeInsets.only(top: mHeight * 0.2, bottom: mHeight * 0.05),
-              child: SizedBox(
-                child: SvgPicture.asset("assets/HouseLogoSVG.svg"),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: (mHeight) * 0.5,
-            child: Align(
-              alignment: Alignment.bottomRight,"assets/splash_svg_bottom.svg",
-              child: Stack(
-                children: [
-                  SvgPicture.asset(
-                    "assets/splash_svg_bottom.svg",
-                    fit: BoxFit.fill,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: mHeight * 0.35),
-                    child: SpinKitCircle(
-                      color: Colors.deepOrange,
-                      size: mHeight * 0.1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    )*/
   }
 
   Future<ApiResponse> authenticateUser(String email, String password) async {
@@ -207,9 +148,12 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+  String _email = '';
+  String _password = '';
+
   void getLoginDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? email = await prefs.getString("Email");
+    /*String? email = await prefs.getString("Email");
     String? password = await prefs.getString("Password");
     if (email != null && password != null) {
       authenticateUser(email, password);
@@ -217,6 +161,32 @@ class _SplashScreenState extends State<SplashScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => const WebViewApplication(),
+        ),
+      );
+    }*/
+    setState(() {
+      _email = (prefs.getString("Email") ?? '');
+      _password = (prefs.getString("Password") ?? '');
+    });
+    if (_email == '' && _password == '') {
+      Timer(
+        const Duration(seconds: 4),
+            () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+          ),
+        ),
+      );
+    } else {
+      authenticateUser(_email, _password);
+      Timer(
+        const Duration(seconds: 4),
+            () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const WebViewApplication(),
+          ),
         ),
       );
     }
