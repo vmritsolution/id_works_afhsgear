@@ -114,27 +114,41 @@ class _WebViewApplicationState extends State<WebViewApplication> {
     return IndexedStack(
       index: _stackToView,
       children: [
-        WebView(
-          initialUrl:
-              'https://www.afhsgear.com/autologin.php?token=${TokenUtility.token}',
-          javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (WebViewController webViewController) {
-            _controller.complete(webViewController);
-            controllerGlobal = webViewController;
-          },
+        Theme(
+          data: ThemeData(dialogBackgroundColor: Colors.transparent),
+          child: WebView(
+            initialUrl:
+                'https://www.afhsgear.com/autologin.php?token=${TokenUtility.token}',
+            javascriptMode: JavascriptMode.unrestricted,
+            onWebViewCreated: (WebViewController webViewController) {
+              _controller.complete(webViewController);
+              controllerGlobal = webViewController;
+            },
 
-          // added this
-          onPageStarted: (url) {
-            if (url == _listeningUrl) {
-              _handleLogout();
-              /*Navigator.of(context, rootNavigator: true).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => const LoginScreen(),
-                ),
-              );*/
-            }
-          },
-          onPageFinished: _handleLoad,
+            // added this
+            onPageStarted: (url) {
+              if (url == _listeningUrl) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const AlertDialog(
+                      title: SpinKitCircle(
+                        color: Color(0xFFf88d2a),
+                      ),
+                    );
+                  },
+                );
+                _handleLogout();
+                /*Navigator.of(context, rootNavigator: true).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                );*/
+              }
+              print(url);
+            },
+            onPageFinished: _handleLoad,
+          ),
         ),
         Container(
           color: Colors.white,

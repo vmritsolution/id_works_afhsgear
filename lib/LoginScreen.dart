@@ -27,31 +27,31 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
 
-  Widget build(BuildContext context) {
+  Widget build(BuildContext scaffoldContext) {
     return Platform.isIOS
-        ? _buildCupertinoScaffold()
-        : _buildMaterialScaffold();
+        ? _buildCupertinoScaffold(scaffoldContext)
+        : _buildMaterialScaffold(scaffoldContext);
   }
 
-  Widget _buildCupertinoScaffold() {
+  Widget _buildCupertinoScaffold(BuildContext context) {
     return CupertinoPageScaffold(
       backgroundColor: Colors.white,
       child: Container(
-        child: _buildBody(),
+        child: _buildBody(context),
       ),
     );
   }
 
-  Widget _buildMaterialScaffold() {
+  Widget _buildMaterialScaffold(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
-        child: _buildBody(),
+        child: _buildBody(context),
       ),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext bodyContext) {
     final mediaQuery = MediaQuery.of(context).size;
     return SafeArea(
       child: Form(
@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: mediaQuery.height * 0.04),
                     Platform.isIOS
                         ? _cupertinoLoginButton()
-                        : _materialLoginButton(),
+                        : _materialLoginButton(bodyContext),
                     SizedBox(height: mediaQuery.height * 0.03),
                     Platform.isIOS
                         ? _cupertinoTextButton()
@@ -192,10 +192,10 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _materialLoginButton() {
+  Widget _materialLoginButton(BuildContext logInContext) {
     return Theme(
       data: ThemeData(dialogBackgroundColor: Colors.transparent),
-      child: Builder(builder: (context) {
+      child: Builder(builder: (builderContext) {
         return Container(
           height: 50,
           width: 200,
@@ -205,15 +205,15 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           child: ElevatedButton(
             onPressed: () {
-
               //added
               _formKey.currentState!.validate();
 
               if (_formKey.currentState!.validate()) {
                 showDialog(
-                  context: context,
+                  context: logInContext,
                   builder: (context) {
                     return const AlertDialog(
+                      backgroundColor: Colors.transparent,
                       title: SpinKitCircle(
                         color: Color(0xFFf88d2a),
                       ),
@@ -319,6 +319,7 @@ class _LoginScreenState extends State<LoginScreen> {
         arguments: (_apiResponse.Data as User));
   }*/
   var _response;
+
   Future<ApiResponse> authenticateUser(String username, String password) async {
     ApiResponse _apiResponse = ApiResponse();
     try {
@@ -328,19 +329,26 @@ class _LoginScreenState extends State<LoginScreen> {
         'customerPassword': passwordController.text,
         'siteID': "450",
       });
-      _response = response.statusCode;// added
+      _response = response.statusCode; // added
       switch (response.statusCode) {
         case 200:
+          _showSnackBar();
+          print('statuscode =  ${response.statusCode}');
           _apiResponse.Data = User.fromJson(json.decode(response.body));
+          print('_apiResponse ${_apiResponse.Data}');
           _saveAndRedirectToHome(_apiResponse);
+          print(
+              '_apiResponse.Data as User).message = ${(_apiResponse.Data as User).message}');
+          // if ((_apiResponse.Data as User).message == '') {}
+
           break;
         case 401:
           _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
-          _showSnackBar();//added
+          _showSnackBar(); //added
           break;
         default:
           _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
-          _showSnackBar();//added
+          _showSnackBar(); //added
           break;
       }
     } on SocketException {
@@ -364,15 +372,17 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
+
   //added
-  void _showSnackBar(){
-    final snackBar = SnackBar(
-      content: const Text("Something Went Wrong"),
-      action: SnackBarAction(
-        label: "undo",
-        onPressed: (){},
-      ),
-    );
-    Scaffold.of(context).showSnackBar(snackBar);
+  void _showSnackBar() {
+    Builder(builder: (context) {
+      return SnackBar(
+        content: const Text("Something Went Wrong"),
+        action: SnackBarAction(
+          label: "undo",
+          onPressed: () {},
+        ),
+      );
+    });
   }
 }
