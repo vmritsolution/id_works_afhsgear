@@ -15,7 +15,7 @@ class User {
   User.fromJson(Map<String, dynamic> json) {
     _status = json['status'];
     _message =
-    (json['message'] != null ? new Message.fromJson(json['message']) : null)!;
+    (json['message'] != null ? Message.fromJson(json['message']) : json['message']);
   }
 
   Map<String, dynamic> toJson() {
