@@ -227,40 +227,12 @@ class _LoginScreenState extends State<LoginScreen> {
             onPressed: () {
               //added
               _formKey.currentState!.validate();
-/*
-              if(_formKey.currentState!.validate()){
-                }
-*/
               if(_isEmailValid&&_isPasswordValid){
                 _submitDialog(context);
                 authenticateUser(emailController.text, passwordController.text);
               }else{
                 _showSnackBar(context,"Please Provide Valid Credentials");
               }
-/*
-              if (_formKey.currentState!.validate()) {
-                showDialog(
-                  context: logInContext,
-                  builder: (context) {
-                    return const AlertDialog(
-                        backgroundColor: Colors.transparent,
-                        title: SpinKitCircle(
-                        color: Color(0xFFf88d2a),
-                      ),
-                    );
-                  },
-                );
-
-              }
-*/
-/*
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const WebViewApplication(),
-                  ),
-                );
-*/
             },
             child: const Text(
               'LOGIN',
@@ -291,14 +263,6 @@ class _LoginScreenState extends State<LoginScreen> {
         }else{
           _showSnackBar(context,"Please Provide Valid Credentials");
         }
-/*
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const WebViewApplication(),
-          ),
-        );
-*/
       },
       color: const Color(0xFFf88d2d),
     );
@@ -329,31 +293,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-  /* void _handleSubmitted() async {
-    final FormState form = _formKey.currentState;
-    if (!form.validate()) {
-      showInSnackBar('Please fix the errors in red before submitting.');
-    } else {
-      form.save();
-      _apiResponse = await authenticateUser(_username, _password);
-      if ((_apiResponse.ApiError as ApiError) == null) {
-        _saveAndRedirectToHome();
-      } else {
-        showInSnackBar((_apiResponse.ApiError as ApiError).error);
-      }
-    }
-  }
-
-  void _saveAndRedirectToHome() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("userId", (_apiResponse.Data as User).userId);
-    Navigator.pushNamedAndRemoveUntil(
-        context, '/home', ModalRoute.withName('/home'),
-        arguments: (_apiResponse.Data as User));
-  }*/
   var _response;
-
   Future<ApiResponse> authenticateUser(String username, String password) async {
     ApiResponse _apiResponse = ApiResponse();
     try {
@@ -408,22 +348,6 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
-
-  //added
-/*
-  void _showSnackBar(BuildContext context) {
-    Builder(builder: (context) {
-      return SnackBar(
-        content: const Text("Something Went Wrong,Please try again"),
-        action: SnackBarAction(
-          label: "Ok",
-          onPressed: () {},
-        ),
-      );
-    });
-  }
-*/
-
   Future<Null> _submitDialog(BuildContext context) async {
     return await showDialog<Null>(
         context: context,
