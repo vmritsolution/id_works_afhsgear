@@ -23,11 +23,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+   TextEditingController emailController = TextEditingController();
+   TextEditingController passwordController = TextEditingController();
   var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
-  bool _isEmailValid=false;
-  bool _isPasswordValid=false;
+  bool _isEmailValid = false;
+  bool _isPasswordValid = false;
 
   Widget build(BuildContext scaffoldContext) {
     return Platform.isIOS
@@ -54,7 +54,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildBody(BuildContext bodyContext) {
-    final mediaQuery = MediaQuery.of(context).size;
+    final mediaQuery = MediaQuery
+        .of(context)
+        .size;
     return SafeArea(
       child: Form(
         key: _formKey,
@@ -115,31 +117,33 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _materialTextField() {
-    final mediaQuery = MediaQuery.of(context).size;
+    final mediaQuery = MediaQuery
+        .of(context)
+        .size;
     return Column(
       children: [
         //added
         TextFormField(
           textInputAction: TextInputAction.next,
-            validator: (value) {
-              if (value!.isEmpty) {
-                _isEmailValid=false;
+          validator: (value) {
+            if (value!.isEmpty) {
+              _isEmailValid = false;
+              return 'Please Enter Valid Email';
+            } else {
+              if (isEmailValid(value)) {
+                _isEmailValid = true;
+                return '';
+              } else {
                 return 'Please Enter Valid Email';
-              }else {
-                if (isEmailValid(value)) {
-                  _isEmailValid = true;
-                  return '';
-                } else {
-                  return 'Please Enter Valid Email';
-                }
               }
-            },
+            }
+          },
           controller: emailController,
           decoration: InputDecoration(
             labelText: "Email Address",
             labelStyle: const TextStyle(color: Colors.black, fontSize: 18),
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+            const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(0),
               borderSide: const BorderSide(color: Color(0xFFf88d2d), width: 2),
@@ -159,17 +163,17 @@ class _LoginScreenState extends State<LoginScreen> {
           textInputAction: TextInputAction.done,
           validator: (value) {
             if (value!.isEmpty) {
-              _isPasswordValid=false;
+              _isPasswordValid = false;
               return 'Please Enter Valid Password';
-            }else {
-                _isPasswordValid = true;
-                return '';
+            } else {
+              _isPasswordValid = true;
+              return '';
             }
           },
           controller: passwordController,
           decoration: InputDecoration(
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+            const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
             labelText: "Password",
             labelStyle: const TextStyle(color: Colors.black, fontSize: 18),
             border: OutlineInputBorder(
@@ -189,14 +193,17 @@ class _LoginScreenState extends State<LoginScreen> {
       ],
     );
   }
+
   bool isEmailValid(String value) {
     Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex =  RegExp(pattern.toString());
+    RegExp regex = RegExp(pattern.toString());
     return (!regex.hasMatch(value)) ? false : true;
   }
 
   Widget _cupertinoTextField() {
-    final mediaQuery = MediaQuery.of(context).size;
+    final mediaQuery = MediaQuery
+        .of(context)
+        .size;
     return Column(
       children: [
         const CupertinoTextField(
@@ -227,11 +234,11 @@ class _LoginScreenState extends State<LoginScreen> {
             onPressed: () {
               //added
               _formKey.currentState!.validate();
-              if(_isEmailValid&&_isPasswordValid){
+              if (_isEmailValid && _isPasswordValid) {
                 _submitDialog(context);
                 authenticateUser(emailController.text, passwordController.text);
-              }else{
-                _showSnackBar(context,"Please Provide Valid Credentials");
+              } else {
+                _showSnackBar(context, "Please Provide Valid Credentials");
               }
             },
             child: const Text(
@@ -257,11 +264,11 @@ class _LoginScreenState extends State<LoginScreen> {
         style: TextStyle(color: Colors.white, fontSize: 28),
       ),
       onPressed: () {
-        if(_isEmailValid&&_isPasswordValid){
+        if (_isEmailValid && _isPasswordValid) {
           _submitDialog(context);
           authenticateUser(emailController.text, passwordController.text);
-        }else{
-          _showSnackBar(context,"Please Provide Valid Credentials");
+        } else {
+          _showSnackBar(context, "Please Provide Valid Credentials");
         }
       },
       color: const Color(0xFFf88d2d),
@@ -293,7 +300,9 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
   var _response;
+
   Future<ApiResponse> authenticateUser(String username, String password) async {
     ApiResponse _apiResponse = ApiResponse();
     try {
@@ -305,11 +314,19 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       _response = response.statusCode; // added
       print(response.body);
+      print(response.statusCode);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      print(jsonResponse['message']);
       switch (response.statusCode) {
         case 200:
           _formKey.currentState!.validate();
           Navigator.pop(context);
-            _apiResponse.Data = User.fromJson(json.decode(response.body));
+          // added
+          if (jsonResponse['message'] == 'username and pass are not valid') {
+            _showSnackBar(context, 'Username and password are not valid');
+          }
+          _apiResponse.Data = User.fromJson(json.decode(response.body));
           print("heyres:${(_apiResponse.Data as User).message}");
           _saveAndRedirectToHome(_apiResponse);
           // }
@@ -317,18 +334,20 @@ class _LoginScreenState extends State<LoginScreen> {
         case 400:
           Navigator.pop(context);
           _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
-          _showSnackBar(context,"Something Went Wrong,Please try again!"); //added
+          _showSnackBar(
+              context, "Something Went Wrong,Please try again!"); //added
           break;
         default:
           Navigator.pop(context);
           _apiResponse.ApiError = ApiError.fromJson(json.decode(response.body));
-          _showSnackBar(context,"Something Went Wrong,Please try again!!"); //added
+          _showSnackBar(
+              context, "Something Went Wrong,Please try again!!"); //added
           break;
       }
     } on SocketException {
       Navigator.pop(context);
       _apiResponse.ApiError = ApiError(error: "Server error. Please retry");
-      _showSnackBar(context,"Server error. Please retry"); //added
+      _showSnackBar(context, "Server error. Please retry"); //added
     }
     return _apiResponse;
   }
@@ -348,6 +367,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
+
   Future<Null> _submitDialog(BuildContext context) async {
     return await showDialog<Null>(
         context: context,
@@ -358,13 +378,14 @@ class _LoginScreenState extends State<LoginScreen> {
             backgroundColor: Colors.transparent,
             children: <Widget>[
               Center(
-                child: SpinKitCircle(color: Color(0xFFf88d2a))
+                  child: SpinKitCircle(color: Color(0xFFf88d2a))
               )
             ],
           );
         });
   }
-  void _showSnackBar(BuildContext context,String message) {
+
+  void _showSnackBar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
       action: SnackBarAction(
@@ -378,6 +399,5 @@ class _LoginScreenState extends State<LoginScreen> {
     // Find the ScaffoldMessenger in the widget tree
     // and use it to show a SnackBar.
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
   }
 }
