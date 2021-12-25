@@ -14,7 +14,6 @@ import 'package:id_works_afhsgear/utility/User.dart';
 import 'package:id_works_afhsgear/web_view/web_view_applicaion.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -35,29 +34,6 @@ class _LoginScreenState extends State<LoginScreen> {
   String notificationAlert = "alert";
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-  // @override
-/*
-  void initState() {
-    super.initState();
-
-    _firebaseMessaging.configure(
-      onMessage: (message) async{
-        setState(() {
-          messageTitle = message["notification"]["title"];
-          notificationAlert = "New Notification Alert";
-        });
-
-      },
-      onResume: (message) async{
-        setState(() {
-          messageTitle = message["data"]["title"];
-          notificationAlert = "Application opened from Notification";
-        });
-
-      },
-    );
-  }
-*/
   Widget build(BuildContext scaffoldContext) {
     return Platform.isIOS
         ? _buildCupertinoScaffold(scaffoldContext)
