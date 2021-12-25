@@ -39,6 +39,9 @@ dependencies:
   webview_flutter: ^3.0.0
   http: ^0.13.4
   shared_preferences: ^2.0.11
+  awesome_notifications: ^0.0.6+7
+  firebase_core: ^1.2.1
+  firebase_messaging: ^11.2.4
 
 dev_dependencies:
   flutter_test:

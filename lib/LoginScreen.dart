@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -12,6 +14,7 @@ import 'package:id_works_afhsgear/utility/User.dart';
 import 'package:id_works_afhsgear/web_view/web_view_applicaion.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -28,7 +31,33 @@ class _LoginScreenState extends State<LoginScreen> {
   var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
   bool _isEmailValid=false;
   bool _isPasswordValid=false;
+  String messageTitle = "Empty";
+  String notificationAlert = "alert";
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
+  // @override
+/*
+  void initState() {
+    super.initState();
+
+    _firebaseMessaging.configure(
+      onMessage: (message) async{
+        setState(() {
+          messageTitle = message["notification"]["title"];
+          notificationAlert = "New Notification Alert";
+        });
+
+      },
+      onResume: (message) async{
+        setState(() {
+          messageTitle = message["data"]["title"];
+          notificationAlert = "Application opened from Notification";
+        });
+
+      },
+    );
+  }
+*/
   Widget build(BuildContext scaffoldContext) {
     return Platform.isIOS
         ? _buildCupertinoScaffold(scaffoldContext)
@@ -340,6 +369,7 @@ class _LoginScreenState extends State<LoginScreen> {
     await prefs.setString("Password", passwordController.text);
     TokenUtility.token = (apiResponse.Data as User).message.token;
     if (apiResponse != null) {
+      Notify();
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -380,4 +410,18 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
   }
+  void Notify() async{
+    // local notification
+    AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: 10,
+            channelKey: 'basic_channel',
+            title: 'Simple Notification',
+            body: 'Simple body',
+            bigPicture:'assets://images/protocoderlogo.png'
+        )
+    );
+  }
+
+
 }
