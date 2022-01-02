@@ -7,7 +7,7 @@ import 'package:id_works_afhsgear/SplashScreen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
+ /* await Firebase.initializeApp();
   AwesomeNotifications().initialize(
       null,
       [
@@ -21,9 +21,16 @@ Future<void> main() async {
       ]
   );
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
+*/
+  await init();
   runApp(const MyApp());
 }
+
+Future init() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+}
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
   //firebase push notification

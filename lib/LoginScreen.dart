@@ -9,6 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:id_works_afhsgear/utility/ApiError.dart';
 import 'package:id_works_afhsgear/utility/ApiResponse.dart';
+import 'package:id_works_afhsgear/utility/NotificationsUtility.dart';
 import 'package:id_works_afhsgear/utility/TokenUtility.dart';
 import 'package:id_works_afhsgear/utility/User.dart';
 import 'package:id_works_afhsgear/web_view/web_view_applicaion.dart';
@@ -32,7 +33,30 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordValid=false;
   String messageTitle = "Empty";
   String notificationAlert = "alert";
+
+  //added newly
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  String notificationTitle = 'No Title';
+  String notificationBody = 'No Body';
+  String notificationData = 'No Data';
+
+  @override
+  void initState() {
+    final firebaseMessaging = FCM();
+    firebaseMessaging.setNotifications();
+
+    firebaseMessaging.streamCtlr.stream.listen(_changeData);
+    firebaseMessaging.bodyCtlr.stream.listen(_changeBody);
+    firebaseMessaging.titleCtlr.stream.listen(_changeTitle);
+
+    super.initState();
+  }
+
+  _changeData(String msg) => setState(() => notificationData = msg);
+  _changeBody(String msg) => setState(() => notificationBody = msg);
+  _changeTitle(String msg) => setState(() => notificationTitle = msg);
+
+
 
   Widget build(BuildContext scaffoldContext) {
     return Platform.isIOS
