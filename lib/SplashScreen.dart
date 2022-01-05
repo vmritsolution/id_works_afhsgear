@@ -53,9 +53,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS
+    return /*Platform.isIOS
         ? _buildCupertinoScaffold()
-        : _buildMaterialScaffold();
+        : _buildMaterialScaffold();*/
+    _buildMaterialScaffold();
   }
 
   Widget _buildCupertinoScaffold() {

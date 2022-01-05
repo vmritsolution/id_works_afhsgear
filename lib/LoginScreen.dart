@@ -92,9 +92,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),*/
                     SizedBox(height: mediaQuery.height * 0.04),
-                    Platform.isIOS
+                    /*Platform.isIOS
                         ? _cupertinoTextField()
-                        : _materialTextField(),
+                        : _materialTextField(),*/
+                    _materialTextField(),
                     SizedBox(height: mediaQuery.height * 0.04),
                     Platform.isIOS
                         ? _cupertinoLoginButton()
