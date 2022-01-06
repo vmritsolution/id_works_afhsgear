@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:id_works_afhsgear/ForgotPasswordScreen.dart';
 import 'package:id_works_afhsgear/utility/ApiError.dart';
 import 'package:id_works_afhsgear/utility/ApiResponse.dart';
 import 'package:id_works_afhsgear/utility/NotificationsUtility.dart';
@@ -26,11 +27,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   final _formKey = GlobalKey<FormState>();
-   TextEditingController emailController = TextEditingController();
-   TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
-  bool _isEmailValid=false;
-  bool _isPasswordValid=false;
+  bool _isEmailValid = false;
+  bool _isPasswordValid = false;
   String messageTitle = "Empty";
   String notificationAlert = "alert";
 
@@ -53,10 +54,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _changeData(String msg) => setState(() => notificationData = msg);
+
   _changeBody(String msg) => setState(() => notificationBody = msg);
+
   _changeTitle(String msg) => setState(() => notificationTitle = msg);
-
-
 
   Widget build(BuildContext scaffoldContext) {
     return Platform.isIOS
@@ -83,9 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildBody(BuildContext bodyContext) {
-    final mediaQuery = MediaQuery
-        .of(context)
-        .size;
+    final mediaQuery = MediaQuery.of(context).size;
     return SafeArea(
       child: Form(
         key: _formKey,
@@ -147,9 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _materialTextField() {
-    final mediaQuery = MediaQuery
-        .of(context)
-        .size;
+    final mediaQuery = MediaQuery.of(context).size;
     return Column(
       children: [
         //added
@@ -173,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
             labelText: "Email Address",
             labelStyle: const TextStyle(color: Colors.black, fontSize: 18),
             contentPadding:
-            const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(0),
               borderSide: const BorderSide(color: Color(0xFFf88d2d), width: 2),
@@ -203,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
           controller: passwordController,
           decoration: InputDecoration(
             contentPadding:
-            const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
             labelText: "Password",
             labelStyle: const TextStyle(color: Colors.black, fontSize: 18),
             border: OutlineInputBorder(
@@ -225,15 +222,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   bool isEmailValid(String value) {
-    Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = RegExp(pattern.toString());
     return (!regex.hasMatch(value)) ? false : true;
   }
 
   Widget _cupertinoTextField() {
-    final mediaQuery = MediaQuery
-        .of(context)
-        .size;
+    final mediaQuery = MediaQuery.of(context).size;
     return Column(
       children: [
         const CupertinoTextField(
@@ -320,7 +316,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _materialTextButton() {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ForgotPasswordScreen(),
+          ),
+        );
+      },
       child: const Text(
         'Forgot password?',
         style: TextStyle(
@@ -408,9 +410,7 @@ class _LoginScreenState extends State<LoginScreen> {
             elevation: 0.0,
             backgroundColor: Colors.transparent,
             children: <Widget>[
-              Center(
-                  child: SpinKitCircle(color: Color(0xFFf88d2a))
-              )
+              Center(child: SpinKitCircle(color: Color(0xFFf88d2a)))
             ],
           );
         });
@@ -431,7 +431,8 @@ class _LoginScreenState extends State<LoginScreen> {
     // and use it to show a SnackBar.
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
-  void Notify() async{
+
+  void Notify() async {
     // local notification
     AwesomeNotifications().createNotification(
         content: NotificationContent(
@@ -439,10 +440,6 @@ class _LoginScreenState extends State<LoginScreen> {
             channelKey: 'basic_channel',
             title: 'Simple Notification',
             body: 'Simple body',
-            bigPicture:'assets://images/protocoderlogo.png'
-        )
-    );
+            bigPicture: 'assets://images/protocoderlogo.png'));
   }
-
-
 }
