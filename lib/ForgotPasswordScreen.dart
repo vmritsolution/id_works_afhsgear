@@ -4,6 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:id_works_afhsgear/LoginScreen.dart';
+
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
 
@@ -107,8 +109,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 
-  Widget _forgotPasswordButton(BuildContext context) {
-    return Builder(builder: (context) {
+  Widget _forgotPasswordButton(BuildContext contextNew) {
+    return Builder(builder: (contextNew) {
       return SizedBox(
         height: 50,
         width: 250,
@@ -123,7 +125,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           },
           child: const Text(
             "FORGET PASSWORD",
-            style: TextStyle(color: Colors.white, fontSize: 22),
+            style: TextStyle(color: Colors.white, fontSize: 20),
           ),
           style: ElevatedButton.styleFrom(
             primary: const Color(0xFFf88d2d),
@@ -157,19 +159,30 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         _isEmailValid = false;
       });
     }*/
+    Navigator.pop(context);
+    // if(jsonResponse['status']==200) {
+      if (jsonResponse['message'] == null) {
+        print(jsonResponse['message']);
+        _showSnackBar(context, "Please Check Valid Email");
 
-    if (jsonResponse['message'] == null) {
-      print(jsonResponse['message']);
-      Navigator.of(context).pop();
-      _showDialog(context, 'Please Enter Valid Email');
-    } else if(jsonResponse['message'] == true) {
-      print(jsonResponse['message']);
-      Navigator.pop(context);
-      _showDialog(context, 'Please Check Your Email');
-    } else {
-      Navigator.of(context).pop();
-      _showDialog(context, 'Something went wrong Please try again!');
-    }
+        // _showDialog(context, 'Please Enter Valid Email');
+      } else if (jsonResponse['message'] == true) {
+        // _showSnackBar(context, "Please Check Your Email");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+          ),
+        );
+
+        // _showDialog(context, 'Please Check Your Email');
+      } else {
+        _showSnackBar(context, "Something went wrong Please try again!");
+        // _showDialog(context, 'Something went wrong Please try again!');
+      }
+    /*}else{
+      _showSnackBar(context, "Something went wrong Please try again!");
+    }*/
     /*else if (jsonResponse['message'] == 'true') {
       Navigator.of(context).pop();
       _showDialog(context, 'Please Check your Mail');
@@ -179,6 +192,22 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     }*/
   }
 
+  void _showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      action: SnackBarAction(
+        label: 'OK',
+        onPressed: () {
+          // Some code to undo the change.
+        },
+      ),
+    );
+
+    // Find the ScaffoldMessenger in the widget tree
+    // and use it to show a SnackBar.
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   _submitDialog(BuildContext context) {
     return showDialog(
         context: context,
@@ -186,7 +215,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         builder: (BuildContext context) {
           return const SimpleDialog(
             elevation: 0.0,
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.transparent,
             children: <Widget>[
               Center(child: SpinKitCircle(color: Color(0xFFf88d2a)))
             ],

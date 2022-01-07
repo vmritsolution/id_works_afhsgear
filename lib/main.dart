@@ -24,6 +24,7 @@ Future<void> main() async {
 */
   await init();
   runApp(const MyApp());
+  // runApp(const MaterialApp(home:MyApp(), debugShowCheckedModeBanner: false,));
 }
 
 Future init() async {
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,

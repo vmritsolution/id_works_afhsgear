@@ -269,7 +269,7 @@ class _LoginScreenState extends State<LoginScreen> {
             },
             child: const Text(
               'LOGIN',
-              style: TextStyle(color: Colors.white, fontSize: 22),
+              style: TextStyle(color: Colors.white, fontSize: 20),
             ),
             style: ElevatedButton.styleFrom(
               primary: const Color(0xFFf88d2d),
@@ -287,7 +287,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return CupertinoButton(
       child: const Text(
         'LOGIN',
-        style: TextStyle(color: Colors.white, fontSize: 28),
+        style: TextStyle(color: Colors.white, fontSize: 20),
       ),
       onPressed: () {
         if (_isEmailValid && _isPasswordValid) {
@@ -345,11 +345,7 @@ class _LoginScreenState extends State<LoginScreen> {
         'siteID': "450",
       });
       _response = response.statusCode; // added
-      print(response.body);
-      print(response.statusCode);
       var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
-      print(jsonResponse['message']);
       switch (response.statusCode) {
         case 200:
           _formKey.currentState!.validate();
@@ -359,7 +355,6 @@ class _LoginScreenState extends State<LoginScreen> {
             _showSnackBar(context, 'Username and password are not valid');
           }
           _apiResponse.Data = User.fromJson(json.decode(response.body));
-          print("heyres:${(_apiResponse.Data as User).message}");
           _saveAndRedirectToHome(_apiResponse);
           // }
           break;
