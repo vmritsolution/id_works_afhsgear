@@ -147,9 +147,7 @@ class _WebViewApplicationState extends State<WebViewApplication> {
               }
               print(url);
             },
-            onPageFinished: (url){
-              _handleLoad;
-            },
+            onPageFinished: _handleLoad,
           ),
         ),
         Container(
