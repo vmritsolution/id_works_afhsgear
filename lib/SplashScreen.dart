@@ -23,7 +23,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
-
+  final Color color = HexColor.fromHex('#ce0e2d');
 
   /*Future<void> _handleNavigation(String value) async {
     // bool isTokenEmpty = TokenUtility.token.isEmpty;
@@ -61,6 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Widget _buildCupertinoScaffold() {
     return CupertinoPageScaffold(
+      backgroundColor:const Color(0xffce0e2d),
       child: Container(
         child: _buildBody(context),
       ),
@@ -69,6 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Widget _buildMaterialScaffold() {
     return Scaffold(
+      backgroundColor:const Color(0xffce0e2d),
       body: Container(
         child: _buildBody(context),
       ),
@@ -79,25 +81,27 @@ class _SplashScreenState extends State<SplashScreen> {
     var mHeight = MediaQuery.of(context).size.height;
     return Stack(
       children: [
-        Align(
+        /*Align(
           alignment: Alignment.bottomRight,
           child: SvgPicture.asset(
             "assets/splash_svg_bottom.svg",
             fit: BoxFit.fill,
           ),
-        ),
+        ),*/
         Center(
           child: Padding(
             padding: EdgeInsets.only(top: mHeight * 0.1),
             child: const SpinKitCircle(
-              color: Color(0xFFf88d2a),
+              color: Color(0xffce0e2d),
             ),
           ),
         ),
         Center(
           child: Padding(
             padding: EdgeInsets.only(bottom: mHeight * 0.2),
-            child: SvgPicture.asset("assets/HouseLogoSVG.svg"),
+            child: SvgPicture.asset("assets/KwikTripMerchTransparent.svg"),
+            // child: Image.asset("assets/KwikTripMerchTransparent.png"),
+
           ),
         )
       ],
@@ -192,4 +196,20 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     }
   }
+}
+extension HexColor on Color {
+  /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
+  static Color fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
+  /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
+  String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
+      '${alpha.toRadixString(16).padLeft(2, '0')}'
+      '${red.toRadixString(16).padLeft(2, '0')}'
+      '${green.toRadixString(16).padLeft(2, '0')}'
+      '${blue.toRadixString(16).padLeft(2, '0')}';
 }

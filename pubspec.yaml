@@ -70,6 +70,10 @@ flutter:
   assets:
     - assets/HouseLogoSVG.svg
     - assets/splash_svg_bottom.svg
+    - assets/KwikTripMerchlogo.svg
+    - assets/KwikTripMerch.png
+    - assets/KwikTripMerchTransparent.png
+    - assets/KwikTripMerchTransparent.svg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

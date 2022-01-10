@@ -57,7 +57,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return SizedBox(
       height: 150,
       width: 150,
-      child: SvgPicture.asset("assets/HouseLogoSVG.svg"),
+      // child: SvgPicture.asset("assets/HouseLogoSVG.svg"),
+      child: SvgPicture.asset("assets/KwikTripMerchlogo.svg"),
     );
   }
 
@@ -95,15 +96,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(0),
-          borderSide: const BorderSide(color: Color(0xFFf88d2d), width: 2),
+          borderSide: const BorderSide(color: Color(0xffce0e2d), width: 2),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(0),
-          borderSide: const BorderSide(color: Color(0xFFf88d2d), width: 2),
+          borderSide: const BorderSide(color: Color(0xffce0e2d), width: 2),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(0),
-          borderSide: const BorderSide(color: Color(0xFFf88d2d), width: 2),
+          borderSide: const BorderSide(color: Color(0xffce0e2d), width: 2),
         ),
       ),
     );
@@ -128,7 +129,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
           style: ElevatedButton.styleFrom(
-            primary: const Color(0xFFf88d2d),
+            primary: const Color(0xffce0e2d),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(40),
             ),
@@ -217,7 +218,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             elevation: 0.0,
             backgroundColor: Colors.transparent,
             children: <Widget>[
-              Center(child: SpinKitCircle(color: Color(0xFFf88d2a)))
+              Center(child: SpinKitCircle(color: Color(0xffce0e2d)))
             ],
           );
         });

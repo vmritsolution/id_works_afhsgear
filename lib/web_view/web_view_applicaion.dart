@@ -133,7 +133,7 @@ class _WebViewApplicationState extends State<WebViewApplication> {
                   builder: (context) {
                     return const AlertDialog(
                       title: SpinKitCircle(
-                        color: Color(0xFFf88d2a),
+                        color: Color(0xffce0e2d),
                       ),
                     );
                   },
@@ -154,7 +154,7 @@ class _WebViewApplicationState extends State<WebViewApplication> {
           color: Colors.white,
           child: const Center(
             child: SpinKitCircle(
-              color: Color(0xFFf88d2a),
+              color: Color(0xffce0e2d),
             ),
           ),
         ),
