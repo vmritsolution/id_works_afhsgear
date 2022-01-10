@@ -79,7 +79,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Widget _buildBody(BuildContext context) {
     var mHeight = MediaQuery.of(context).size.height;
-    return Stack(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      // Stack(
       children: [
         /*Align(
           alignment: Alignment.bottomRight,
