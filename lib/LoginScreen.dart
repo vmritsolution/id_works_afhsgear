@@ -92,10 +92,10 @@ class _LoginScreenState extends State<LoginScreen> {
         key: _formKey,
         child: SingleChildScrollView(
           child: SizedBox(
-            height: mediaQuery.height * 0.9,
+            height: mediaQuery.height * 1,
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -142,9 +142,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ? _cupertinoLoginButton()
                         : _materialLoginButton(bodyContext),
                     SizedBox(height: mediaQuery.height * 0.03),
-                    Platform.isIOS
+
+                // Expanded(
+                   Platform.isIOS
                         ? _cupertinoTextButton()
                         : _materialTextButton(),
+                // )
                   ],
                 ),
               ),
@@ -399,11 +402,10 @@ class _LoginScreenState extends State<LoginScreen> {
     ));
   }
 
-  var _response;
+  var jsonResponse;
 
   Future<ApiResponse> authenticateUser(String username, String password) async {
     ApiResponse _apiResponse = ApiResponse();
-    Navigator.pop(context);
     try {
       final response = await http.post(baseUrl, body: {
         'action': "login",
@@ -411,27 +413,40 @@ class _LoginScreenState extends State<LoginScreen> {
         'customerPassword': passwordController.text,
         'siteID': "1009",
       });
-      _response = response.statusCode; // added
-      var jsonResponse = json.decode(response.body);
+      if(response.body.isNotEmpty) {
+        jsonResponse = json.decode(response.body);
+      }
       switch (response.statusCode) {
         case 200:
           _formKey.currentState!.validate();
           Navigator.pop(context);
-          // added
+          if(jsonResponse['status']=="400"){
+            _showSnackBar(context, 'Username and password are not valid');
+/*            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LoginScreen(),
+              ),
+            );*/
+
+          }else if(jsonResponse['status']=="200"){
+
+/*
           if (jsonResponse['message'] == 'username and pass are not valid') {
             _showSnackBar(context, 'Username and password are not valid');
           }
+*/
           _apiResponse.Data = User.fromJson(json.decode(response.body));
 
-          _saveAndRedirectToHome(_apiResponse);
+          // _saveAndRedirectToHome(_apiResponse);
 
-          // addDeviceToken(jsonResponse['customerGUID'],jsonResponse['customerID']);
           String cuid=(_apiResponse.Data as User).message.customerGUID;
           String cid=(_apiResponse.Data as User).message.customerGUID;
           String token=(_apiResponse.Data as User).message.token;
-          print("heyye:"+cuid);
-          addDeviceToken(cuid,cid,token);
-          // }
+
+          addDeviceToken(cuid,cid,token,_apiResponse);
+
+          }
           break;
         case 400:
           Navigator.pop(context);
@@ -453,8 +468,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     return _apiResponse;
   }
-  Future<ApiResponse> addDeviceToken(String CUID,String CID,String token) async {
-    print("heydevice:"+CUID+"::"+CID);
+  Future<ApiResponse> addDeviceToken(String CUID,String CID,String token,ApiResponse apiResponse) async {
     ApiResponse _apiResponse = ApiResponse();
     try {
       final response = await http.post(baseUrl, body: {
@@ -464,17 +478,13 @@ class _LoginScreenState extends State<LoginScreen> {
         'deviceToken': token,
         'customerGUID': CUID,
       });
-      var jsonResponse = json.decode(response.body);
       switch (response.statusCode) {
         case 200:
-          // added
-          if (jsonResponse['message'] == 'username and pass are not valid') {
-            _showSnackBar(context, 'Username and password are not valid');
-          }
-          // }
+          _saveAndRedirectToHome(apiResponse);
           break;
         case 400:
           break;
+
         default:
           _showSnackBar(
               context, "Something Went Wrong,Please try again!!"); //added
