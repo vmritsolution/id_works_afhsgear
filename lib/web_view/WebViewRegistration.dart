@@ -10,11 +10,11 @@ import 'package:id_works_afhsgear/utility/TokenUtility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class WebViewApplication extends StatefulWidget {
-  const WebViewApplication({Key? key}) : super(key: key);
+class WebViewRegistration extends StatefulWidget {
+  const WebViewRegistration({Key? key}) : super(key: key);
 
   @override
-  _WebViewApplicationState createState() => _WebViewApplicationState();
+  _WebViewRegistrationState createState() => _WebViewRegistrationState();
 }
 
 WebViewController? controllerGlobal;
@@ -48,9 +48,9 @@ Future<bool> _handleBack(context) async {
   return Future.value(false);
 }
 
-class _WebViewApplicationState extends State<WebViewApplication> {
+class _WebViewRegistrationState extends State<WebViewRegistration> {
   final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+  Completer<WebViewController>();
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +120,7 @@ class _WebViewApplicationState extends State<WebViewApplication> {
         Theme(
           data: ThemeData(dialogBackgroundColor: Colors.transparent),
           child: WebView(
-            initialUrl: 'https://kwiktripmerch.com/autologin.php?app=1&token=${TokenUtility.token}',
+            initialUrl: 'https://kwiktripmerch.com/register.php?app=1',
             javascriptMode: JavascriptMode.unrestricted,
             onWebViewCreated: (WebViewController webViewController) {
               _controller.complete(webViewController);
@@ -129,6 +129,7 @@ class _WebViewApplicationState extends State<WebViewApplication> {
 
             // added this
             onPageStarted: (url) {
+
               if (url == _listeningUrl) {
                 showDialog(
                   context: context,
@@ -141,11 +142,12 @@ class _WebViewApplicationState extends State<WebViewApplication> {
                   },
                 );
                 _handleLogout();
-                /*Navigator.of(context, rootNavigator: true).pushReplacement(
+/*Navigator.of(context, rootNavigator: true).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const LoginScreen(),
                   ),
                 );*/
+
               }
               print(url);
             },

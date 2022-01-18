@@ -34,18 +34,22 @@ class Message {
   late String _customerEmail;
   late String _customerID;
   late String _token;
+  late String _customerGUID;
 
   Message(
       {required String customerFirst,
        required String customerLast,
        required String customerEmail,
        required String customerID,
-       required String token}) {
+       required String token,
+       required String customerGUID
+      }) {
     this._customerFirst = customerFirst;
     this._customerLast = customerLast;
     this._customerEmail = customerEmail;
     this._customerID = customerID;
     this._token = token;
+    this._customerGUID = customerGUID;
   }
 
   String get customerFirst => _customerFirst;
@@ -58,6 +62,8 @@ class Message {
   set customerID(String customerID) => _customerID = customerID;
   String get token => _token;
   set token(String token) => _token = token;
+  String get customerGUID => _customerGUID;
+  set customerGUID(String customerGUID) => _customerGUID = customerGUID;
 
   Message.fromJson(Map<String, dynamic> json) {
     _customerFirst = json['customerFirst'];
@@ -65,6 +71,7 @@ class Message {
     _customerEmail = json['customerEmail'];
     _customerID = json['customerID'];
     _token = json['token'];
+    _customerGUID = json['customerGUID'];
   }
 
   Map<String, dynamic> toJson() {
@@ -74,6 +81,7 @@ class Message {
     data['customerEmail'] = this._customerEmail;
     data['customerID'] = this._customerID;
     data['token'] = this._token;
+    data['customerGUID'] = this._customerGUID;
     return data;
   }
 }

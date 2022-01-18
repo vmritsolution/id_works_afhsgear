@@ -22,7 +22,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
+  // var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
+  var baseUrl = Uri.parse('https://kwiktripmerch.com/api/');
   final Color color = HexColor.fromHex('#ce0e2d');
 
   /*Future<void> _handleNavigation(String value) async {
@@ -117,8 +118,10 @@ class _SplashScreenState extends State<SplashScreen> {
         'action': "login",
         'customerEmail': email,
         'customerPassword': password,
-        'siteID': "450",
+        'siteID': "1009",
       });
+
+      print("response:"+response.body);
 
       switch (response.statusCode) {
         case 200:

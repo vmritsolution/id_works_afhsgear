@@ -13,6 +13,7 @@ import 'package:id_works_afhsgear/utility/ApiResponse.dart';
 import 'package:id_works_afhsgear/utility/NotificationsUtility.dart';
 import 'package:id_works_afhsgear/utility/TokenUtility.dart';
 import 'package:id_works_afhsgear/utility/User.dart';
+import 'package:id_works_afhsgear/web_view/WebViewRegistration.dart';
 import 'package:id_works_afhsgear/web_view/web_view_applicaion.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,7 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
+  // var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
+  var baseUrl = Uri.parse('https://kwiktripmerch.com/api/');
   bool _isEmailValid = false;
   bool _isPasswordValid = false;
   String messageTitle = "Empty";
@@ -89,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             height: mediaQuery.height * 0.9,
             child: Center(
               child: Padding(
@@ -119,6 +121,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         ? _cupertinoTextField()
                         : _materialTextField(),*/
                     _materialTextField(),
+                    // SizedBox(height: mediaQuery.height * 0.01),
+                  Container(
+                    child: Platform.isIOS
+                      ? _cupertinoRegisterButton()
+                      : _materialRegisterButton(),
+                  ),
+/*                    const Align(
+                        alignment: Alignment.centerRight,
+                        child:Text(
+                      'Register For An Account',
+                      style: TextStyle(
+                        color: Color(0xffce0e2d),
+                        fontSize: 19,
+                      ),
+                    )
+                    )*/
                     SizedBox(height: mediaQuery.height * 0.04),
                     Platform.isIOS
                         ? _cupertinoLoginButton()
@@ -310,7 +328,13 @@ class _LoginScreenState extends State<LoginScreen> {
           fontSize: 16,
         ),
       ),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ForgotPasswordScreen(),
+          ),
+        );
+      },
     );
   }
 
@@ -332,17 +356,60 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+  Widget _cupertinoRegisterButton() {
+    return CupertinoButton(
+      child: const Align(
+        alignment: Alignment.centerRight,
+      child: Text(
+        'Register For An Account',
+        style: TextStyle(
+          color: Color(0xffce0e2d),
+          fontSize: 17,
+        ),
+      ),
+      ),
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => WebViewRegistration(),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _materialRegisterButton() {
+    return TextButton(
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => WebViewRegistration(),
+          ),
+        );
+      },
+      child:const Align(
+      alignment: Alignment.centerRight,
+    child:Text(
+        'Register For An Account',
+        style: TextStyle(
+          color: Color(0xffce0e2d),
+          fontSize: 17,
+        ),
+      ),
+    ));
+  }
 
   var _response;
 
   Future<ApiResponse> authenticateUser(String username, String password) async {
     ApiResponse _apiResponse = ApiResponse();
+    Navigator.pop(context);
     try {
       final response = await http.post(baseUrl, body: {
         'action': "login",
         'customerEmail': emailController.text,
         'customerPassword': passwordController.text,
-        'siteID': "450",
+        'siteID': "1009",
       });
       _response = response.statusCode; // added
       var jsonResponse = json.decode(response.body);
@@ -355,7 +422,15 @@ class _LoginScreenState extends State<LoginScreen> {
             _showSnackBar(context, 'Username and password are not valid');
           }
           _apiResponse.Data = User.fromJson(json.decode(response.body));
+
           _saveAndRedirectToHome(_apiResponse);
+
+          // addDeviceToken(jsonResponse['customerGUID'],jsonResponse['customerID']);
+          String cuid=(_apiResponse.Data as User).message.customerGUID;
+          String cid=(_apiResponse.Data as User).message.customerGUID;
+          String token=(_apiResponse.Data as User).message.token;
+          print("heyye:"+cuid);
+          addDeviceToken(cuid,cid,token);
           // }
           break;
         case 400:
@@ -378,6 +453,39 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     return _apiResponse;
   }
+  Future<ApiResponse> addDeviceToken(String CUID,String CID,String token) async {
+    print("heydevice:"+CUID+"::"+CID);
+    ApiResponse _apiResponse = ApiResponse();
+    try {
+      final response = await http.post(baseUrl, body: {
+        'action': "addDevice",
+        'customerID': CID,
+        'deviceType': "1",
+        'deviceToken': token,
+        'customerGUID': CUID,
+      });
+      var jsonResponse = json.decode(response.body);
+      switch (response.statusCode) {
+        case 200:
+          // added
+          if (jsonResponse['message'] == 'username and pass are not valid') {
+            _showSnackBar(context, 'Username and password are not valid');
+          }
+          // }
+          break;
+        case 400:
+          break;
+        default:
+          _showSnackBar(
+              context, "Something Went Wrong,Please try again!!"); //added
+          break;
+      }
+    } on SocketException {
+      _apiResponse.ApiError = ApiError(error: "Server error. Please retry");
+      _showSnackBar(context, "Server error. Please retry"); //added
+    }
+    return _apiResponse;
+  }
 
   void _saveAndRedirectToHome(ApiResponse apiResponse) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -386,7 +494,7 @@ class _LoginScreenState extends State<LoginScreen> {
     await prefs.setString("Password", passwordController.text);
     TokenUtility.token = (apiResponse.Data as User).message.token;
     if (apiResponse != null) {
-      Notify();
+      // Notify();
       Navigator.push(
         context,
         MaterialPageRoute(

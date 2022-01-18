@@ -147,10 +147,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   Future<void> _forgotPasswordAuth(String email) async {
     final response =
-        await http.post(Uri.parse('https://www.afhsgear.com/api/'), body: {
+        await http.post(Uri.parse('https://kwiktripmerch.com/api/'), body: {
       'action': "forgotPassword",
       'customerEmail': email,
-      'siteID': "450",
+      'siteID': "1009",
     });
     var jsonResponse = json.decode(response.body);
     print(jsonResponse);
@@ -168,7 +168,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
         // _showDialog(context, 'Please Enter Valid Email');
       } else if (jsonResponse['message'] == true) {
-        // _showSnackBar(context, "Please Check Your Email");
+        _showSnackBar(context, "Please Check Your Email");
         Navigator.push(
           context,
           MaterialPageRoute(
