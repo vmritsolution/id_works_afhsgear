@@ -164,7 +164,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     // if(jsonResponse['status']==200) {
       if (jsonResponse['message'] == null) {
         print(jsonResponse['message']);
-        _showSnackBar(context, "Please Check Valid Email");
+        _showSnackBar(context, "Please Enter Valid Email");
 
         // _showDialog(context, 'Please Enter Valid Email');
       } else if (jsonResponse['message'] == true) {

@@ -67,6 +67,7 @@ class _WebViewRegistrationState extends State<WebViewRegistration> {
         builder: (context) => const LoginScreen(),
       ),
     );
+    // Navigator.pop(context);
   }
 
   Widget _buildScaffold() {
@@ -94,6 +95,7 @@ class _WebViewRegistrationState extends State<WebViewRegistration> {
 
   // final _listeningUrl = 'https://www.afhsgear.com/login.php'; // added this
   final _listeningUrl = 'https://kwiktripmerch.com/login.php'; // added this
+  // final _listeningUrl = 'https://kwiktripmerch.com/login.php?ref=index.php'; // added this
 
 
 
@@ -130,7 +132,7 @@ class _WebViewRegistrationState extends State<WebViewRegistration> {
             // added this
             onPageStarted: (url) {
 
-              if (url == _listeningUrl) {
+              if (url.contains(_listeningUrl)) {
                 showDialog(
                   context: context,
                   builder: (context) {
@@ -149,7 +151,7 @@ class _WebViewRegistrationState extends State<WebViewRegistration> {
                 );*/
 
               }
-              print(url);
+              print(url+"::"+_listeningUrl);
             },
             onPageFinished: _handleLoad,
           ),

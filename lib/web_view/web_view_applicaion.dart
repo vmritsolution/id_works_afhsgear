@@ -67,6 +67,7 @@ class _WebViewApplicationState extends State<WebViewApplication> {
         builder: (context) => const LoginScreen(),
       ),
     );
+    // Navigator.pop(context);
   }
 
   Widget _buildScaffold() {
@@ -112,7 +113,6 @@ class _WebViewApplicationState extends State<WebViewApplication> {
   }
 
   Widget _buildWebView(BuildContext context) {
-    debugPrint("tokenTotkaehereeee:${TokenUtility.token}");
 
     return IndexedStack(
       index: _stackToView,
@@ -129,7 +129,7 @@ class _WebViewApplicationState extends State<WebViewApplication> {
 
             // added this
             onPageStarted: (url) {
-              if (url == _listeningUrl) {
+              if (url.contains(_listeningUrl)) {
                 showDialog(
                   context: context,
                   builder: (context) {

@@ -77,11 +77,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildMaterialScaffold(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async => false,
+    child:Scaffold(
       backgroundColor: Colors.white,
       body: Container(
         child: _buildBody(context),
       ),
+    )
     );
   }
 
