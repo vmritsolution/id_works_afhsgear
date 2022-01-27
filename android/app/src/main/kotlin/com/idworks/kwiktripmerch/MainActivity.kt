@@ -1,4 +1,4 @@
-package com.idworks.id_works_afhsgear
+package com.idworks.kwiktripmerch
 
 import io.flutter.embedding.android.FlutterActivity
 

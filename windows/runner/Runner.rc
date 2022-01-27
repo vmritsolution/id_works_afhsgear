@@ -92,10 +92,10 @@ BEGIN
             VALUE "CompanyName", "com.idworks" "\0"
             VALUE "FileDescription", "A new Flutter project." "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "id_works_afhsgear" "\0"
+            VALUE "InternalName", "id_works_kwiktripmerch" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2021 com.idworks. All rights reserved." "\0"
-            VALUE "OriginalFilename", "id_works_afhsgear.exe" "\0"
-            VALUE "ProductName", "id_works_afhsgear" "\0"
+            VALUE "OriginalFilename", "id_works_kwiktripmerch.exe" "\0"
+            VALUE "ProductName", "id_works_kwiktripmerch" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

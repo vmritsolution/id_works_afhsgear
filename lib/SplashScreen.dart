@@ -6,12 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:id_works_afhsgear/LoginScreen.dart';
-import 'package:id_works_afhsgear/utility/ApiError.dart';
-import 'package:id_works_afhsgear/utility/ApiResponse.dart';
-import 'package:id_works_afhsgear/utility/TokenUtility.dart';
-import 'package:id_works_afhsgear/utility/User.dart';
-import 'package:id_works_afhsgear/web_view/web_view_applicaion.dart';
+import 'package:id_works_kwiktripmerch/LoginScreen.dart';
+import 'package:id_works_kwiktripmerch/utility/ApiError.dart';
+import 'package:id_works_kwiktripmerch/utility/ApiResponse.dart';
+import 'package:id_works_kwiktripmerch/utility/TokenUtility.dart';
+import 'package:id_works_kwiktripmerch/utility/User.dart';
+import 'package:id_works_kwiktripmerch/web_view/web_view_applicaion.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {

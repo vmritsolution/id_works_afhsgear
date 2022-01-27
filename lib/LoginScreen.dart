@@ -7,14 +7,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:id_works_afhsgear/ForgotPasswordScreen.dart';
-import 'package:id_works_afhsgear/utility/ApiError.dart';
-import 'package:id_works_afhsgear/utility/ApiResponse.dart';
-import 'package:id_works_afhsgear/utility/NotificationsUtility.dart';
-import 'package:id_works_afhsgear/utility/TokenUtility.dart';
-import 'package:id_works_afhsgear/utility/User.dart';
-import 'package:id_works_afhsgear/web_view/WebViewRegistration.dart';
-import 'package:id_works_afhsgear/web_view/web_view_applicaion.dart';
+import 'package:id_works_kwiktripmerch/ForgotPasswordScreen.dart';
+import 'package:id_works_kwiktripmerch/utility/ApiError.dart';
+import 'package:id_works_kwiktripmerch/utility/ApiResponse.dart';
+import 'package:id_works_kwiktripmerch/utility/NotificationsUtility.dart';
+import 'package:id_works_kwiktripmerch/utility/TokenUtility.dart';
+import 'package:id_works_kwiktripmerch/utility/User.dart';
+import 'package:id_works_kwiktripmerch/web_view/WebViewContinueGuest.dart';
+import 'package:id_works_kwiktripmerch/web_view/WebViewRegistration.dart';
+import 'package:id_works_kwiktripmerch/web_view/web_view_applicaion.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String notificationTitle = 'No Title';
   String notificationBody = 'No Body';
   String notificationData = 'No Data';
+  bool _obscureText = false;
 
   @override
   void initState() {
@@ -55,6 +57,12 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
   }
 
+  // Toggles the password show status
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
   _changeData(String msg) => setState(() => notificationData = msg);
 
   _changeBody(String msg) => setState(() => notificationBody = msg);
@@ -111,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(fontSize: 36),
                       ),
                     ),*/
-                    SizedBox(height: mediaQuery.height * 0.03),
+                    // SizedBox(height: mediaQuery.height * 0.03),
                     /*const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -119,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(fontSize: 28),
                       ),
                     ),*/
-                    SizedBox(height: mediaQuery.height * 0.04),
+                    // SizedBox(height: mediaQuery.height * 0.04),
                     /*Platform.isIOS
                         ? _cupertinoTextField()
                         : _materialTextField(),*/
@@ -140,12 +148,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     )
                     )*/
-                    SizedBox(height: mediaQuery.height * 0.04),
+                    SizedBox(height: mediaQuery.height * 0.03),
                     Platform.isIOS
                         ? _cupertinoLoginButton()
                         : _materialLoginButton(bodyContext),
+
                     SizedBox(height: mediaQuery.height * 0.03),
 
+                    _guestUser(),
+
+                    SizedBox(height: mediaQuery.height * 0.03),
                 // Expanded(
                    Platform.isIOS
                         ? _cupertinoTextButton()
@@ -161,6 +173,48 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget _guestUser(){
+    return Container(
+        height: 50,
+        width: 200,
+        decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(40),
+    ),
+    child:
+    /*OutlinedButton(
+      onPressed: null,
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
+      ),
+      child: const Text("Continue as Guest",style: TextStyle(color: Color(0xffce0e2d)),
+      ),
+    )
+    );*/
+      TextButton(
+          child: Text(
+              "Continue As Guest".toUpperCase(),
+              style: const TextStyle(fontSize: 14)
+          ),
+          style: ButtonStyle(
+              padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(15)),
+              foregroundColor: MaterialStateProperty.all<Color>(const Color(0xffce0e2d)),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      side: const BorderSide(color: Color(0xffce0e2d))
+                  )
+              )
+          ),
+          onPressed: () => {
+          Navigator.of(context).push(
+          MaterialPageRoute(
+          builder: (context) => const WebViewContinueGuest(),
+          ),
+          )
+      }
+
+      ));
+  }
   Widget _homeLogoWidget() {
     return SizedBox(
       height: 150,
@@ -212,6 +266,7 @@ class _LoginScreenState extends State<LoginScreen> {
         SizedBox(height: mediaQuery.height * 0.04),
         TextFormField(
           textInputAction: TextInputAction.done,
+          obscureText: !_obscureText,
           validator: (value) {
             if (value!.isEmpty) {
               _isPasswordValid = false;
@@ -239,7 +294,15 @@ class _LoginScreenState extends State<LoginScreen> {
               borderRadius: BorderRadius.circular(0),
               borderSide: const BorderSide(color: Color(0xffce0e2d), width: 2),
             ),
-          ),
+             suffixIcon: GestureDetector(
+              onTap: () {
+               _toggle();
+               },
+              child: Icon(
+               _obscureText ? Icons.visibility : Icons
+        .visibility_off, color: Colors.red,),
+    ),
+    ),
         ),
       ],
     );

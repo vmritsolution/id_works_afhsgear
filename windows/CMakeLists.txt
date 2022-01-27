@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(id_works_afhsgear LANGUAGES CXX)
+project(id_works_kwiktripmerch LANGUAGES CXX)
 
-set(BINARY_NAME "id_works_afhsgear")
+set(BINARY_NAME "id_works_kwiktripmerch")
 
 cmake_policy(SET CMP0063 NEW)
 

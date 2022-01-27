@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:id_works_afhsgear/LoginScreen.dart';
-import 'package:id_works_afhsgear/utility/TokenUtility.dart';
+import 'package:id_works_kwiktripmerch/LoginScreen.dart';
+import 'package:id_works_kwiktripmerch/utility/TokenUtility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -67,6 +67,7 @@ class _WebViewRegistrationState extends State<WebViewRegistration> {
         builder: (context) => const LoginScreen(),
       ),
     );
+    _showSnackBar(context, "Registration Successful. Please Login");
     // Navigator.pop(context);
   }
 
@@ -167,4 +168,20 @@ class _WebViewRegistrationState extends State<WebViewRegistration> {
       ],
     );
   }
+  void _showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      action: SnackBarAction(
+        label: 'OK',
+        onPressed: () {
+          // Some code to undo the change.
+        },
+      ),
+    );
+
+    // Find the ScaffoldMessenger in the widget tree
+    // and use it to show a SnackBar.
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
 }

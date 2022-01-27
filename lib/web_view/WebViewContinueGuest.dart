@@ -5,16 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:id_works_kwiktripmerch/LoginScreen.dart';
 import 'package:id_works_kwiktripmerch/utility/TokenUtility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class WebViewApplication extends StatefulWidget {
-  const WebViewApplication({Key? key}) : super(key: key);
+import '../LoginScreen.dart';
+
+class WebViewContinueGuest extends StatefulWidget {
+  const WebViewContinueGuest({Key? key}) : super(key: key);
 
   @override
-  _WebViewApplicationState createState() => _WebViewApplicationState();
+  WebViewContinueGuestState createState() => WebViewContinueGuestState();
 }
 
 WebViewController? controllerGlobal;
@@ -48,9 +49,9 @@ Future<bool> _handleBack(context) async {
   return Future.value(false);
 }
 
-class _WebViewApplicationState extends State<WebViewApplication> {
+class WebViewContinueGuestState extends State<WebViewContinueGuest> {
   final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+  Completer<WebViewController>();
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +68,7 @@ class _WebViewApplicationState extends State<WebViewApplication> {
         builder: (context) => const LoginScreen(),
       ),
     );
+    _showSnackBar(context, "Registration Successful. Please Login");
     // Navigator.pop(context);
   }
 
@@ -95,6 +97,7 @@ class _WebViewApplicationState extends State<WebViewApplication> {
 
   // final _listeningUrl = 'https://www.afhsgear.com/login.php'; // added this
   final _listeningUrl = 'https://kwiktripmerch.com/login.php'; // added this
+  // final _listeningUrl = 'https://kwiktripmerch.com/login.php?ref=index.php'; // added this
 
 
 
@@ -113,6 +116,7 @@ class _WebViewApplicationState extends State<WebViewApplication> {
   }
 
   Widget _buildWebView(BuildContext context) {
+    debugPrint("tokenTotkaehereeee:${TokenUtility.token}");
 
     return IndexedStack(
       index: _stackToView,
@@ -120,7 +124,7 @@ class _WebViewApplicationState extends State<WebViewApplication> {
         Theme(
           data: ThemeData(dialogBackgroundColor: Colors.transparent),
           child: WebView(
-            initialUrl: 'https://kwiktripmerch.com/autologin.php?app=1&token=${TokenUtility.token}',
+            initialUrl: 'https://kwiktripmerch.com/?app=1',
             javascriptMode: JavascriptMode.unrestricted,
             onWebViewCreated: (WebViewController webViewController) {
               _controller.complete(webViewController);
@@ -129,6 +133,7 @@ class _WebViewApplicationState extends State<WebViewApplication> {
 
             // added this
             onPageStarted: (url) {
+
               if (url.contains(_listeningUrl)) {
                 showDialog(
                   context: context,
@@ -141,13 +146,14 @@ class _WebViewApplicationState extends State<WebViewApplication> {
                   },
                 );
                 _handleLogout();
-                /*Navigator.of(context, rootNavigator: true).pushReplacement(
+/*Navigator.of(context, rootNavigator: true).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const LoginScreen(),
                   ),
                 );*/
+
               }
-              print(url);
+              print(url+"::"+_listeningUrl);
             },
             onPageFinished: _handleLoad,
           ),
@@ -163,4 +169,20 @@ class _WebViewApplicationState extends State<WebViewApplication> {
       ],
     );
   }
+  void _showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      action: SnackBarAction(
+        label: 'OK',
+        onPressed: () {
+          // Some code to undo the change.
+        },
+      ),
+    );
+
+    // Find the ScaffoldMessenger in the widget tree
+    // and use it to show a SnackBar.
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
 }

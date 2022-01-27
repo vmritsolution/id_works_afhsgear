@@ -50,7 +50,8 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.idworks.id_works_afhsgear"
+        applicationId "com.idworks.kwiktripmerch"
+//        applicationId "com.idworks.id_works_kwiktripmerch"
         minSdkVersion 20
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()

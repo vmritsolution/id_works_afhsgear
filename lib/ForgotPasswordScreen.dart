@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:id_works_afhsgear/LoginScreen.dart';
+import 'package:id_works_kwiktripmerch/LoginScreen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
