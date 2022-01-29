@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:connectivity/connectivity.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,14 +19,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription< ConnectivityResult > _connectivitySubscription;
+
   // var baseUrl = Uri.parse('https://www.afhsgear.com/api/');
   var baseUrl = Uri.parse('https://kwiktripmerch.com/api/');
   final Color color = HexColor.fromHex('#ce0e2d');
+  bool isOnline=false;
 
   /*Future<void> _handleNavigation(String value) async {
     // bool isTokenEmpty = TokenUtility.token.isEmpty;
@@ -46,8 +53,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   initState() {
+    initConnectivity();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_UpdateConnectionState);
     super.initState();
-    getLoginDetails();
+    // getLoginDetails();
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
   }
 
 
@@ -201,7 +217,43 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     }
   }
+
+  Future< void > initConnectivity() async {
+    late ConnectivityResult result;
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      print("Error Occurred: ${e.toString()} ");
+      return;
+    }
+    if (!mounted) {
+      return Future.value(null);
+    }
+    return _UpdateConnectionState(result);
+  }
+
+  Future<void> _UpdateConnectionState(ConnectivityResult result) async {
+    if (result == ConnectivityResult.mobile ||
+        result == ConnectivityResult.wifi) {
+      // showStatus(result, true);
+      getLoginDetails();
+    } else {
+      showStatus(result, false);
+    }
+  }
+
+  void showStatus(ConnectivityResult result, bool status) {
+    final snackBar =
+
+    SnackBar(
+        content:
+        // Text("${status ? 'ONLINE\n' : 'OFFLINE\n'}${result.toString()} "),
+        Text("${status ? 'ONLINE\n' : 'You are OFFLINE! Please Check Your Internet Connection!!\n'} "),
+        backgroundColor: status ? Colors.green : Colors.red);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 }
+//Flutterant Network connectivity checker
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
   static Color fromHex(String hexString) {

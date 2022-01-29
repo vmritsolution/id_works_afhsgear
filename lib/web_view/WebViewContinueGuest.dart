@@ -68,18 +68,20 @@ class WebViewContinueGuestState extends State<WebViewContinueGuest> {
         builder: (context) => const LoginScreen(),
       ),
     );
-    _showSnackBar(context, "Registration Successful. Please Login");
+    // _showSnackBar(context, "Registration Successful. Please Login");
     // Navigator.pop(context);
   }
 
   Widget _buildScaffold() {
-    return WillPopScope(
+   /* return WillPopScope(
       onWillPop: () => _handleBack(context),
-      child: SafeArea(
+      child:SafeArea(
+   */
+    return SafeArea(
         child: Platform.isIOS
             ? _buildCupertinoScaffold()
             : _buildMaterialScaffold(),
-      ),
+      // ),
     );
   }
 

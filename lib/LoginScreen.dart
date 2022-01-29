@@ -540,7 +540,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final response = await http.post(baseUrl, body: {
         'action': "addDevice",
         'customerID': CID,
-        'deviceType': "1",
+        'deviceType': "2",
         'deviceToken': token,
         'customerGUID': CUID,
       });
