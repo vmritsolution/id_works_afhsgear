@@ -482,6 +482,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if(response.body.isNotEmpty) {
         jsonResponse = json.decode(response.body);
       }
+      print("heyres:"+response.body);
       switch (response.statusCode) {
         case 200:
           _formKey.currentState!.validate();
@@ -507,7 +508,7 @@ class _LoginScreenState extends State<LoginScreen> {
           // _saveAndRedirectToHome(_apiResponse);
 
           String cuid=(_apiResponse.Data as User).message.customerGUID;
-          String cid=(_apiResponse.Data as User).message.customerGUID;
+          String cid=(_apiResponse.Data as User).message.customerID;
           String token=(_apiResponse.Data as User).message.token;
 
           addDeviceToken(cuid,cid,token,_apiResponse);
@@ -536,6 +537,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
   Future<ApiResponse> addDeviceToken(String CUID,String CID,String token,ApiResponse apiResponse) async {
     ApiResponse _apiResponse = ApiResponse();
+    print("hey:"+token+"::"+CID+":::"+CUID);
     try {
       final response = await http.post(baseUrl, body: {
         'action': "addDevice",
@@ -544,6 +546,7 @@ class _LoginScreenState extends State<LoginScreen> {
         'deviceToken': token,
         'customerGUID': CUID,
       });
+      print("jsonbody:${response.request}");
       switch (response.statusCode) {
         case 200:
           _saveAndRedirectToHome(apiResponse);
